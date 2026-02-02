@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+/* Simple Datatables Flowbite Theme Integration */
+.datatable-wrapper {
+    @apply border border-gray-200 rounded-lg bg-white;
+}
+
+.datatable-table {
+    @apply w-full text-sm text-left text-gray-500 border-collapse;
+}
+
+.datatable-table thead th {
+    @apply bg-gray-50 text-gray-700 px-4 py-3 font-bold border-b border-gray-200 uppercase text-xs tracking-wider;
+}
+
+.datatable-table thead th a {
+    @apply text-gray-700 no-underline;
+}
+
+.datatable-table tbody td {
+    @apply px-4 py-3 border-b border-gray-100;
+}
+
+.datatable-table tbody tr:last-child td {
+    @apply border-b-0;
+}
+
+.datatable-table tbody tr:hover {
+    @apply bg-gray-50/50;
+}
+
+.datatable-top {
+    @apply flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-b border-gray-200;
+}
+
+.datatable-bottom {
+    @apply flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-t border-gray-200;
+}
+
+.datatable-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5;
+}
+
+.datatable-selector {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-200 focus:border-orange-500 block p-2;
+}
+
+.datatable-pagination ul {
+    @apply flex items-center -space-x-px list-none p-0 m-0;
+}
+
+.datatable-pagination li {
+    @apply list-none;
+}
+
+.datatable-pagination a {
+    @apply px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 no-underline block;
+}
+
+.datatable-pagination .active a {
+    @apply text-orange-600 bg-orange-50 border-orange-300 hover:bg-orange-100;
+}
+
+.datatable-pagination .disabled a {
+    @apply text-gray-300 cursor-not-allowed;
+}
+
+/* Specificity bridge for simple-datatables */
+.datatable-table>thead>tr>th {
+    background-color: var(--color-gray-50) !important;
+    color: var(--color-gray-700) !important;
+    border-bottom-width: 1px !important;
+}
