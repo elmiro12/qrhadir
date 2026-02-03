@@ -2,4 +2,9 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/cbtsmpam/qrhadir.my.id
-    - /bin/echo "DEPLOY TEST" > $DEPLOYPATH/deploy_test.txt
+    - /bin/rsync -av --delete \
+      --exclude='.git' \
+      --exclude='.env' \
+      --exclude='storage' \
+      --exclude='vendor' \
+      ./ $DEPLOYPATH/
