@@ -12,8 +12,6 @@
         document.documentElement.classList.add('no-transition');
     </script>
 
-    {{ --  Test Komentar Tambahkan ini-- }}
-
     {{-- Custom CSS per halaman --}}
     @yield('css')
 </head>
