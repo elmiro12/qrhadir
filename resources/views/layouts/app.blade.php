@@ -13,7 +13,6 @@
     </script>
 
     {{ --  Test Komentar Tambahkan ini-- }}
-    {{ -- Perubahan Layout --}}
 
     {{-- Custom CSS per halaman --}}
     @yield('css')
