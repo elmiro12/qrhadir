@@ -52,8 +52,8 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <x-input label="Kota Tanda Tangan (Opsional)" name="signature_city" value="{{ $event->template->signature_city ?? '' }}" placeholder="Contoh: Jakarta" />
-                        <x-input type="date" label="Tanggal Tanda Tangan" name="signature_date" value="{{ $event->template->signature_date ? \Carbon\Carbon::parse($event->template->signature_date)->format('Y-m-d') : now()->format('Y-m-d') }}" />
+                        <x-input label="Kota Tanda Tangan (Opsional)" name="signature_city" value="{{ $event->template->signature_city ?? '' }}" placeholder="Contoh: Ambon" />
+                        <x-input type="date" label="Tanggal Tanda Tangan" name="signature_date" value="{{ $event->template->signature_date ?? now()->format('Y-m-d') }}" />
                     </div>
 
                     <h3 class="text-md font-semibold mt-6 mb-2 text-gray-700">Teks Sertifikat per Tipe Peserta</h3>
