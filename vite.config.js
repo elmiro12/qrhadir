@@ -19,7 +19,7 @@ export default defineConfig({
                 cleanupOutdatedCaches: true,
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,ttf,eot}']
             },
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'pwa-icon.svg'],
             manifest: {
                 name: 'Absensi QR Code',
                 short_name: 'Absensi',
@@ -30,7 +30,7 @@ export default defineConfig({
                 background_color: '#ffffff',
                 icons: [
                     {
-                        src: 'pwa-icon.svg',
+                        src: '/pwa-icon.svg',
                         sizes: '192x192 512x512',
                         type: 'image/svg+xml',
                         purpose: 'any maskable'
