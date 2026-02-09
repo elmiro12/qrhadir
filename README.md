@@ -1,59 +1,109 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    <a href="https://laravel.com" target="_blank">
+        <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+    </a>
 </p>
 
-## About Laravel
+# Aplikasi Manajemen Event & Absensi QR Code
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi berbasis web yang dirancang untuk mengelola berbagai jenis event, mulai dari seminar, workshop, hingga kegiatan organisasi. Aplikasi ini menyediakan solusi lengkap dari registrasi peserta secara online, manajemen tiket & ID Card, hingga pencatatan kehadiran (absensi) menggunakan **QR Code Scanner**.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Aplikasi ini sangat cocok untuk panitia event yang membutuhkan sistem yang efisien, cepat, dan modern tanpa memerlukan perangkat keras khusus (cukup menggunakan laptop/smartphone dan webcam).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Fitur Utama
 
-## Learning Laravel
+### 📅 Manajemen Event
+- **Dashboard Admin**: Pantau statistik peserta dan kehadiran secara real-time.
+- **Multi-Event**: Kelola banyak event sekaligus dalam satu sistem.
+- **Kustomisasi Event**: Atur detail acara, jenis peserta (VIP, Reguler, Panitia, dll), dan pengaturan sertifikat.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📝 Registrasi & Tiketing
+- **Formulir Registrasi Publik**: Halaman pendaftaran online yang dapat dibagikan kepada calon peserta.
+- **Tiket QR Code**: Peserta otomatis mendapatkan tiket digital berbasis QR Code setelah mendaftar.
+- **ID Card Generator**: Buat dan cetak ID Card peserta secara otomatis dengan template yang dapat disesuaikan. Mendukung mode cetak massal (batch).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📷 Absensi & Validasi
+- **Scan QR Code**: Catat kehadiran peserta dengan memindai tiket atau ID Card mereka menggunakan webcam laptop atau kamera HP.
+- **Mode Kiosk**: Halaman khusus untuk gatekeeper/petugas absensi melakukan scanning dengan cepat.
+- **Real-time Validation**: Mencegah tiket ganda digunakan atau peserta yang belum terdaftar.
 
-## Laravel Sponsors
+### 🏅 Sertifikat Digital
+- **E-Certificate Otomatis**: Peserta dapat mencari dan mengunduh sertifikat mereka sendiri setelah acara selesai.
+- **Verifikasi Sertifikat**: QR Code pada sertifikat untuk memvalidasi keaslian dokumen.
+- **Tanda Tangan Digital**: Pengaturan tanda tangan panitia/pejabat pada sertifikat.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📊 Laporan & Data
+- **Manajemen Peserta**: Database peserta yang lengkap dan mudah dicari.
+- **Ekspor Data**: Unduh laporan kehadiran dan data peserta ke format **Excel**.
+- **Laporan Harian/Event**: Rekapitulasi jumlah peserta yang hadir.
 
-### Premium Partners
+## 🛠️ Teknologi yang Digunakan
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend**: [Laravel 12](https://laravel.com) (PHP 8.2+)
+- **Frontend**: [Tailwind CSS 4](https://tailwindcss.com), [Alpine.js](https://alpinejs.dev)
+- **Database**: MySQL
+- **PWA Support**: Aplikasi dapat diinstal di perangkat (Android/iOS/PC) untuk akses yang lebih mudah.
+- **Libraries Utama**:
+  - `simplesoftwareio/simple-qrcode`: Generator QR Code.
+  - `html5-qrcode`: Scanner QR Code berbasis web.
+  - `intervention/image`: Manipulasi gambar untuk ID Card.
+  - `maatwebsite/excel`: Ekspor laporan ke Excel.
 
-## Contributing
+## 📦 Panduan Instalasi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prasyarat
+- PHP >= 8.2 dengan Imagick
+- Composer
+- Node.js & NPM
+- MySQL Database
 
-## Code of Conduct
+### Langkah-Langkah
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1.  **Clone Repositori**
+    ```bash
+    git clone https://github.com/elmiro12/qrhadir.git
+    cd qrhadir
+    ```
 
-## Security Vulnerabilities
+2.  **Install Dependensi**
+    ```bash
+    composer install
+    npm install
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3.  **Konfigurasi Environment**
+    Salin file `.env.example` ke `.env` dan sesuaikan database:
+    ```bash
+    cp .env.example .env
+    ```
+    Edit `.env`:
+    ```ini
+    DB_DATABASE=nama_database_event
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
 
-## License
+4.  **Generate Key & Migrasi**
+    ```bash
+    php artisan key:generate
+    php artisan migrate
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5.  **Jalankan Aplikasi**
+    Buka dua terminal:
+    ```bash
+    # Terminal 1
+    php artisan serve
+    
+    # Terminal 2
+    npm run dev
+    ```
+
+6.  **Login Admin**
+    Akses `http://localhost:8000/admin/login`
+    *(Silakan buat user admin melalui database atau seeder jika belum tersedia)*
+
+## 📄 Lisensi
+
+Open-source software under the [MIT license](https://opensource.org/licenses/MIT).
