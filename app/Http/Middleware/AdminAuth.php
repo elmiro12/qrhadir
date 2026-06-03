@@ -20,6 +20,20 @@ class AdminAuth
             return redirect('/admin/login');
         }
 
+        $user = Auth::guard('admin')->user();
+        
+        if ($user && $user->isInactive()) {
+            Auth::guard('admin')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            return redirect('/admin/login')->with('swal', [
+                'icon' => 'warning',
+                'title' => 'Akun Belum Aktif',
+                'message' => 'Akun belum diaktivasi oleh super_admin, hubungi superadmin aplikasi.',
+            ]);
+        }
+
         Auth::shouldUse('admin');
 
         return $next($request);

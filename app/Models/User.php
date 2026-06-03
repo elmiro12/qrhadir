@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'status',
     ];
 
     /**
@@ -61,5 +62,15 @@ class User extends Authenticatable
     public function isAdminEvent(): bool
     {
         return $this->role === self::ROLE_ADMIN_EVENT;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isInactive(): bool
+    {
+        return $this->status === 'inactive';
     }
 }

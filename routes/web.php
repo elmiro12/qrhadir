@@ -13,6 +13,12 @@ use App\Http\Controllers\Admin\ParticipantTypeController;
 use App\Http\Controllers\Public\EventRegistrationController;
 
 Route::get('/', [App\Http\Controllers\Public\PageController::class, 'home'])->name('home');
+Route::get('/events', [App\Http\Controllers\Public\PageController::class, 'events'])->name('events.index');
+Route::get('/portal/check', [App\Http\Controllers\Public\PageController::class, 'checkPortal'])->name('portal.check');
+
+use App\Http\Controllers\Public\RegistrationController;
+Route::get('/register-account', [RegistrationController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register-account', [RegistrationController::class, 'register'])->name('register.submit');
 
 Route::get('/register/event/{event:slug}', [EventRegistrationController::class, 'show'])
     ->name('event.register');
