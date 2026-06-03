@@ -12,8 +12,14 @@
             <div>
                 <x-input id="search" name="search" label="Cari Nama/Lokasi" type="text" :value="request('search')" placeholder="Ketik kata kunci..." />
             </div>
-            <div>
-                <x-input id="organizer" name="organizer" label="Penyelenggara" type="text" :value="request('organizer')" placeholder="Nama Admin Event..." />
+            <div class="space-y-2">
+                <label for="organizer" class="text-sm font-medium text-gray-700">Penyelenggara :</label>
+                <select id="organizer" name="organizer" class="w-full rounded-lg border border-gray-300 focus:ring-orange-400 focus:border-orange-400 p-2 text-sm">
+                    <option value="">Semua Penyelenggara</option>
+                    @foreach($organizers as $org)
+                        <option value="{{ $org->id }}" {{ request('organizer') == $org->id ? 'selected' : '' }}>{{ $org->name }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <x-input id="start_date" name="start_date" label="Tgl Mulai" type="date" :value="request('start_date')" />

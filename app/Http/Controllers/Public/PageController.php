@@ -26,6 +26,15 @@ class PageController extends Controller
      */
     public function events(Request $request)
     {
+        $activeEventUserIds = Event::where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->pluck('user_id')
+            ->unique();
+
+        $organizers = \App\Models\User::whereIn('id', $activeEventUserIds)
+            ->orderBy('name')
+            ->get();
+
         $query = Event::where('status', 'active')->where('end_date', '>=', now());
 
         if ($request->filled('search')) {
@@ -37,9 +46,7 @@ class PageController extends Controller
         }
 
         if ($request->filled('organizer')) {
-            $query->whereHas('user', function($q) use ($request) {
-                $q->where('name', 'like', "%{$request->organizer}%");
-            });
+            $query->where('user_id', $request->organizer);
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -52,7 +59,7 @@ class PageController extends Controller
 
         $events = $query->latest('start_date')->paginate(12);
         
-        return view('pages.events', compact('events'));
+        return view('pages.events', compact('events', 'organizers'));
     }
 
     /**
