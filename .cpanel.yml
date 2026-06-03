@@ -10,7 +10,8 @@ deployment:
     - /bin/cp -R routes $DEPLOYPATH/
 
     #build files
-    - /bin/cp -R public/build $DEPLOYPATH/
+    - /bin/mkdir -p $DEPLOYPATH/public
+    - /bin/cp -R public/build $DEPLOYPATH/public/
 
     # root files (tanpa config & env)
     - /bin/cp artisan composer.json composer.lock $DEPLOYPATH/ 2>/dev/null || true
