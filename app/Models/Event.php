@@ -20,6 +20,7 @@ class Event extends Model
         'user_id',
         'logo',
         'has_certificate',
+        'type',
     ];
 
     protected $casts = [
@@ -80,6 +81,11 @@ class Event extends Model
     public function signatures()
     {
         return $this->hasMany(Signature::class)->orderBy('sort_order');
+    }
+
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function certificateReports()

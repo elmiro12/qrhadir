@@ -101,4 +101,12 @@ class IdCardController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function generateBatch(Event $event)
+    {
+        // Dispatch job untuk generate ID Card massal
+        \App\Jobs\GenerateIdCardsBatchJob::dispatch($event);
+
+        return back()->with('success', 'Proses generate ID Card massal sedang berjalan di background. Silakan tunggu beberapa saat sebelum mendownload batch.');
+    }
 }

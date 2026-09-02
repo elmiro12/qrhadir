@@ -61,4 +61,19 @@ class DashboardController extends Controller
             'activeEventsData'
         ));
     }
+
+    public function runQueue()
+    {
+        try {
+            // Jalankan queue:work dan berhenti ketika antrian kosong
+            \Illuminate\Support\Facades\Artisan::call('queue:work', [
+                '--stop-when-empty' => true,
+                '--tries' => 3
+            ]);
+            
+            return back()->with('success', 'Antrian background (Queue) berhasil diproses.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memproses antrian: ' . $e->getMessage());
+        }
+    }
 }

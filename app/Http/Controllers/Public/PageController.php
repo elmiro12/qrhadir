@@ -13,10 +13,12 @@ class PageController extends Controller
      */
     public function home()
     {
-        $events = Event::where('status', 'active')
-                    ->where('end_date', '>=', now())
-                    ->latest('start_date')
-                    ->get();
+        $events = \Illuminate\Support\Facades\Cache::remember('home_active_events', 1800, function () {
+            return Event::where('status', 'active')
+                        ->where('end_date', '>=', now())
+                        ->latest('start_date')
+                        ->get();
+        });
                 
         return view('pages.welcome', compact('events'));
     }
@@ -26,38 +28,47 @@ class PageController extends Controller
      */
     public function events(Request $request)
     {
-        $activeEventUserIds = Event::where('status', 'active')
-            ->where('end_date', '>=', now())
-            ->pluck('user_id')
-            ->unique();
+        $activeEventUserIds = \Illuminate\Support\Facades\Cache::remember('active_organizer_ids', 1800, function () {
+            return Event::where('status', 'active')
+                ->where('end_date', '>=', now())
+                ->pluck('user_id')
+                ->unique();
+        });
 
-        $organizers = \App\Models\User::whereIn('id', $activeEventUserIds)
-            ->orderBy('name')
-            ->get();
+        $organizers = \Illuminate\Support\Facades\Cache::remember('active_organizers', 1800, function () use ($activeEventUserIds) {
+            return \App\Models\User::whereIn('id', $activeEventUserIds)
+                ->orderBy('name')
+                ->get();
+        });
 
-        $query = Event::where('status', 'active')->where('end_date', '>=', now());
+        // Untuk halaman pencarian/filter, kita menggunakan query string hash sebagai cache key unik
+        $cacheKey = 'events_page_' . md5(serialize($request->all()));
+        
+        $events = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($request) {
+            $query = Event::where('status', 'active')->where('end_date', '>=', now());
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%");
-            });
-        }
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('location', 'like', "%{$search}%");
+                });
+            }
 
-        if ($request->filled('organizer')) {
-            $query->where('user_id', $request->organizer);
-        }
+            if ($request->filled('organizer')) {
+                $query->where('user_id', $request->organizer);
+            }
 
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('start_date', [$request->start_date, $request->end_date]);
-        }
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('start_date', [$request->start_date, $request->end_date]);
+            }
 
-        if ($request->filled('has_certificate')) {
-            $query->whereHas('certificateTemplate');
-        }
+            if ($request->filled('has_certificate')) {
+                $query->whereHas('certificateTemplate');
+            }
 
-        $events = $query->latest('start_date')->paginate(12);
+            return $query->latest('start_date')->paginate(12);
+        });
         
         return view('pages.events', compact('events', 'organizers'));
     }

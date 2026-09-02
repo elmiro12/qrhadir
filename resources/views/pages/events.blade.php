@@ -48,7 +48,19 @@
                 
                 <div class="p-4 flex flex-col h-full">
                     <div class="flex justify-between items-start mb-4">
-                        <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded uppercase">Open</span>
+                        <div class="flex flex-wrap items-center gap-2">
+                            @if($event->type === 'online')
+                                @if(now() < $event->start_date)
+                                    <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded uppercase">Dibuka Saat Acara</span>
+                                @else
+                                    <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded uppercase">Absensi Berjalan</span>
+                                @endif
+                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase">Online</span>
+                            @else
+                                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded uppercase">Registrasi</span>
+                                <span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded uppercase">Offline</span>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="flex flex-col items-center text-center mb-4">
@@ -62,7 +74,7 @@
                         <h3 class="font-bold text-lg text-gray-800 group-hover:text-red-600 line-clamp-2 leading-tight">
                             {{ $event->name }}
                         </h3>
-                        <p class="text-xs text-gray-500 mt-1">Oleh: {{ $event->user->name ?? '-' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Oleh: {{ $event->organizer->name ?? '-' }}</p>
                     </div>
 
                     <div class="mt-auto space-y-2 pt-4 border-t border-gray-100 text-sm text-gray-600">

@@ -34,6 +34,7 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'name'       => 'required|string|max:255',
+            'type'       => 'required|in:offline,online',
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
             'location'   => 'nullable|string|max:255',
@@ -60,6 +61,7 @@ class EventController extends Controller
 
         Event::create([
             'name'       => $validated['name'],
+            'type'       => $validated['type'],
             'start_date' => $validated['start_date'],
             'end_date'   => $validated['end_date'],
             'location'   => $validated['location'],
@@ -82,6 +84,7 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'name'       => 'required|string|max:255',
+            'type'       => 'required|in:offline,online',
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
             'location'   => 'nullable|string|max:255',

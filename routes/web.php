@@ -32,6 +32,9 @@ Route::post('/register/event/{event:slug}', [EventRegistrationController::class,
 Route::get('/ticket/{event:slug}/{qrToken}', [EventRegistrationController::class, 'ticket'])
     ->name('event.ticket');
 
+Route::get('/events/{event:slug}/attendance-success/{qrToken}', [EventRegistrationController::class, 'attendanceSuccess'])
+    ->name('event.attendance.success');
+
 Route::post('/check-tickets', [EventRegistrationController::class, 'checkTickets'])
     ->name('event.check_tickets');
 
@@ -71,6 +74,8 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+    Route::post('/dashboard/run-queue', [DashboardController::class, 'runQueue'])
+        ->name('dashboard.run-queue');
 
     Route::resource('events', EventController::class)->except(['show']);
     
@@ -140,6 +145,7 @@ Route::prefix('admin')->middleware('admin.auth')->name('admin.')->group(function
     Route::prefix('events/{event}/id-cards')->name('events.id-cards.')->group(function() {
         Route::get('/participants', [\App\Http\Controllers\Admin\IdCardController::class, 'getParticipants'])->name('get-participants');
         Route::get('/download-batch', [\App\Http\Controllers\Admin\IdCardController::class, 'downloadBatch'])->name('download-batch');
+        Route::post('/generate-batch', [\App\Http\Controllers\Admin\IdCardController::class, 'generateBatch'])->name('generate-batch');
         Route::post('/generate-single/{qrToken}', [\App\Http\Controllers\Admin\IdCardController::class, 'generateSingle'])->name('generate-single');
         
         // ID Card Template per Event

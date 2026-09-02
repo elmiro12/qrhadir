@@ -8,6 +8,16 @@
 @endsection
 
 @section('content')
+
+<div class="mb-6 flex justify-end">
+    <form action="{{ route('admin.dashboard.run-queue') }}" method="POST">
+        @csrf
+        <x-button type="submit" variant="primary" onclick="return confirm('Ini akan memproses semua job background (misal pembuatan ID Card) yang mengantri. Proses ini mungkin memakan waktu beberapa detik. Lanjutkan?')">
+            <x-icon name="sync" class="mr-1"/> Proses Queue (Background Jobs)
+        </x-button>
+    </form>
+</div>
+
 {{-- 1. Stat Cards --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <x-card-icon title="Total Event" icon="event" variant="info">

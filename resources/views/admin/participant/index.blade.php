@@ -14,9 +14,12 @@
     </div>
 
     <div class="flex flex-wrap gap-2">
-        <x-button variant="info" size="sm" onclick="batchGenerate()" id="btnBatchGenerate">
-            <x-icon name="sync" class="mr-1"/> Generate Semua ID Card
-        </x-button>
+        <form action="{{ route('admin.events.id-cards.generate-batch', $event) }}" method="POST" class="inline">
+            @csrf
+            <x-button type="submit" variant="info" size="sm" onclick="return confirm('Mulai proses generate massal di background?')">
+                <x-icon name="sync" class="mr-1"/> Generate Semua ID Card
+            </x-button>
+        </form>
         <a href="{{ route('admin.events.id-cards.download-batch', $event) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
             <x-icon name="download" class="mr-1"/> Download Semua (.zip)
         </a>
@@ -287,95 +290,6 @@
                 cb.disabled = isEdit;
                 // No required here, usually checkboxes are validated by at least one selected or by backend
             });
-        }
-
-        async function batchGenerate() {
-            const btn = document.getElementById('btnBatchGenerate');
-            const originalContent = btn.innerHTML;
-
-            Swal.fire({
-                title: 'Persiapan...',
-                text: 'Mengambil daftar peserta...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            try {
-                // 1. Ambil daftar peserta
-                const resParticipants = await fetch("{{ route('admin.events.id-cards.get-participants', $event) }}");
-                const participants = await resParticipants.json();
-                
-                if (participants.length === 0) {
-                    Swal.fire('Info', 'Belum ada peserta di event ini.', 'info');
-                    return;
-                }
-
-                let success = 0;
-                let failed = [];
-                const total = participants.length;
-
-                // 2. Loping generate satu per satu
-                for (let i = 0; i < total; i++) {
-                    const p = participants[i];
-                    
-                    // Update Progress Swal
-                    Swal.update({
-                        title: 'Generating ID Card...',
-                        html: `Memproses <b>${i + 1}</b> dari <b>${total}</b> peserta<br><small class="text-gray-500">${p.name}</small>`,
-                    });
-
-                    if (!p.token) {
-                        failed.push(`${p.name} (No Token)`);
-                        continue;
-                    }
-
-                    try {
-                        const resGenerate = await fetch(`{{ url('admin/events/'.$event->id.'/id-cards/generate-single') }}/${p.token}`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
-                        });
-                        const data = await resGenerate.json();
-                        if (data.success) {
-                            success++;
-                        } else {
-                            failed.push(`${p.name} (${data.message})`);
-                        }
-                    } catch (e) {
-                        failed.push(`${p.name} (System Error)`);
-                    }
-                }
-
-                // 3. Selesai
-                let finalMessage = `Berhasil generate ${success}/${total} idcard peserta.`;
-                let finalIcon = 'success';
-
-                if (failed.length > 0) {
-                    finalIcon = 'warning';
-                    finalMessage += `<br><br><small class="text-red-500 text-left block max-h-32 overflow-y-auto font-mono">Gagal:<br>${failed.join('<br>')}</small>`;
-                }
-
-                Swal.fire({
-                    icon: finalIcon,
-                    title: 'Selesai',
-                    html: finalMessage,
-                });
-
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kesalahan',
-                    text: 'Terjadi kesalahan saat memproses data.'
-                });
-            } finally {
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-            }
         }
     </script>
 @endpush

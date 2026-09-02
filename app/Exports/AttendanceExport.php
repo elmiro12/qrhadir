@@ -3,48 +3,86 @@
 namespace App\Exports;
 
 use App\Models\Event;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AttendanceExport implements FromView, ShouldAutoSize, WithStyles
+class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected $event;
+    protected $dates = [];
 
     public function __construct(Event $event)
     {
         $this->event = $event;
-    }
 
-    public function view(): View
-    {
-        $event = $this->event;
-        $participants = $event->eventParticipants()
-                    ->join('participant_types', 'event_participants.participant_type_id', '=', 'participant_types.id')
-                    ->join('participants', 'event_participants.participant_id', '=', 'participants.id')
-                    ->with(['participant', 'attendances', 'participantType'])
-                    ->orderBy('participant_types.id', 'asc')
-                    ->orderBy('participants.name', 'asc')
-                    ->select('event_participants.*')
-                    ->get();
-                    
-        $dates = [];
         $start = \Carbon\Carbon::parse($event->start_date);
         $end = \Carbon\Carbon::parse($event->end_date);
         $period = \Carbon\CarbonPeriod::create($start, $end);
         foreach ($period as $date) {
-            $dates[] = $date->format('Y-m-d');
+            $this->dates[] = $date->format('Y-m-d');
+        }
+    }
+
+    public function query()
+    {
+        return $this->event->eventParticipants()
+            ->join('participant_types', 'event_participants.participant_type_id', '=', 'participant_types.id')
+            ->join('participants', 'event_participants.participant_id', '=', 'participants.id')
+            ->with(['participant', 'attendances', 'participantType'])
+            ->orderBy('participant_types.id', 'asc')
+            ->orderBy('participants.name', 'asc')
+            ->select('event_participants.*');
+    }
+
+    public function headings(): array
+    {
+        $headers = [
+            'Nama Peserta',
+            'Tipe',
+            'Email',
+            'Telepon'
+        ];
+
+        foreach ($this->dates as $date) {
+            $headers[] = 'Kehadiran ' . $date;
         }
 
-        return view('admin.reports.excel', compact('event', 'participants', 'dates'));
+        return [
+            ['Laporan Kehadiran: ' . $this->event->name],
+            ['Periode: ' . $this->event->start_date->format('d M Y') . ' - ' . $this->event->end_date->format('d M Y')],
+            $headers
+        ];
+    }
+
+    public function map($eventParticipant): array
+    {
+        $row = [
+            $eventParticipant->participant->name ?? '-',
+            $eventParticipant->participantType->name ?? '-',
+            $eventParticipant->participant->email ?? '-',
+            $eventParticipant->participant->phone ?? '-'
+        ];
+
+        foreach ($this->dates as $date) {
+            $attendance = $eventParticipant->attendances->first(function ($att) use ($date) {
+                return \Carbon\Carbon::parse($att->scanned_at)->format('Y-m-d') === $date;
+            });
+
+            $row[] = $attendance ? \Carbon\Carbon::parse($attendance->scanned_at)->format('H:i:s') : 'Tidak Hadir';
+        }
+
+        return $row;
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
             1    => ['font' => ['bold' => true, 'size' => 14]],
+            2    => ['font' => ['italic' => true, 'size' => 11]],
             3    => ['font' => ['bold' => true]],
         ];
     }

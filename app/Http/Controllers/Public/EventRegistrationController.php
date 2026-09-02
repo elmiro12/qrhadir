@@ -73,6 +73,10 @@ class EventRegistrationController extends Controller
      */
     public function show(Event $event)
     {
+        if ($event->type === 'online' && now() < $event->start_date) {
+            return redirect()->route('events.index')->with('error', 'Form absensi event online ini baru akan dibuka pada saat acara dimulai.');
+        }
+
         $participantTypes = $event->participantTypes()->orderBy('name')->get();
 
         return view('pages.events.register', compact('event', 'participantTypes'));
@@ -81,7 +85,7 @@ class EventRegistrationController extends Controller
     /**
      * Proses registrasi public
      */
-    public function store(Request $request, Event $event)
+    public function store(Request $request, Event $event, \App\Services\EventRegistrationService $registrationService)
     {
         if ($event->status !== 'active') {
             abort(404); // Atau redirect error
@@ -94,60 +98,31 @@ class EventRegistrationController extends Controller
             'participant_type_id' => 'required|exists:participant_types,id',
         ]);
 
-        $tokenUuid = null;
+        $tokenUuid = $registrationService->registerParticipant($event, $validated);
 
-        DB::transaction(function () use ($event, $validated, &$tokenUuid) {
-            // 1. Cari/Buat Participant (Proteksi Duplikat Email/Phone)
-            $participant = Participant::where('email', $validated['email'])
-                ->orWhere('phone', $validated['phone'])
-                ->first();
-
-            if ($participant) {
-                // Update data jika sudah ada (opsional, tergantung policy bisnis)
-                $participant->update([
-                    'name'  => $validated['name'],
-                    'email' => $validated['email'],
-                    'phone' => $validated['phone'],
-                ]);
-            } else {
-                $participant = Participant::create([
-                    'name'  => $validated['name'],
-                    'email' => $validated['email'],
-                    'phone' => $validated['phone'],
-                ]);
-            }
-
-            // 2. Daftarkan di EventParticipant
-            $eventParticipant = EventParticipant::updateOrCreate(
-                [
-                    'event_id'       => $event->id,
-                    'participant_id' => $participant->id,
-                ],
-                [
-                    'participant_type_id' => $validated['participant_type_id'],
-                    'registered_at'       => now(),
-                    'registered_via'      => 'self',
-                ]
-            );
-
-            // 3. Generate QR Token
-            // Cek dulu apakah tokennnya sudah ada (kalau dia refresh halaman atau daftar ulang)
-            $qrToken = AttendanceQrToken::where('event_participant_id', $eventParticipant->id)->first();
-
-            if (!$qrToken) {
-                $qrToken = AttendanceQrToken::create([
-                    'event_participant_id' => $eventParticipant->id,
-                    'token'                => (string) Str::uuid(),
-                    'expired_at'           => $event->end_date ? \Carbon\Carbon::parse($event->end_date)->endOfDay() : null,
-                ]);
-            }
-            
-            $tokenUuid = $qrToken->token;
-        });
+        if ($event->type === 'online') {
+            return redirect()->route('event.attendance.success', ['event' => $event->slug, 'qrToken' => $tokenUuid])
+                             ->with('success', 'Absensi berhasil dicatat.');
+        }
 
         // Redirect ke halaman tiket
         return redirect()->route('event.ticket', ['event' => $event->slug, 'qrToken' => $tokenUuid])
                          ->with('success', 'Registrasi Berhasil! Simpan QR Code ini.');
+    }
+
+    public function attendanceSuccess(Event $event, AttendanceQrToken $qrToken)
+    {
+        if ($qrToken->eventParticipant->event_id != $event->id || $event->type !== 'online') {
+            abort(404);
+        }
+
+        $idCardTemplate = \App\Models\IdCardTemplate::where('is_active', true)->where('event_id', $event->id)->first();
+        // Fallback ke template global jika tidak ada
+        if (!$idCardTemplate) {
+            $idCardTemplate = \App\Models\IdCardTemplate::where('is_active', true)->whereNull('event_id')->first();
+        }
+
+        return view('pages.events.attendance-success', compact('event', 'qrToken', 'idCardTemplate'));
     }
 
     /**
