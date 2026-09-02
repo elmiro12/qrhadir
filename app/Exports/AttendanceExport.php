@@ -61,10 +61,10 @@ class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
     public function map($eventParticipant): array
     {
         $row = [
-            $eventParticipant->participant->name ?? '-',
-            $eventParticipant->participantType->name ?? '-',
-            $eventParticipant->participant->email ?? '-',
-            $eventParticipant->participant->phone ?? '-'
+            $eventParticipant->participant?->name ?? '-',
+            $eventParticipant->participantType?->name ?? '-',
+            $eventParticipant->participant?->email ?? '-',
+            $eventParticipant->participant?->phone ?? '-'
         ];
 
         foreach ($this->dates as $date) {

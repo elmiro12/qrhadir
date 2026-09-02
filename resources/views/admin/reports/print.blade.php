@@ -44,8 +44,8 @@
             @foreach($participants as $index => $ep)
             <tr>
                 <td class="border border-black p-1 text-center">{{ $index + 1 }}</td>
-                <td class="border border-black p-1 text-left">{{ $ep->participant->name }}</td>
-                <td class="border border-black p-1 text-center">{{ $ep->participantType->name ?? '-' }}</td>
+                <td class="border border-black p-1 text-left">{{ $ep->participant?->name ?? 'Unknown' }}</td>
+                <td class="border border-black p-1 text-center">{{ $ep->participantType?->name ?? '-' }}</td>
                 @php $present = false; @endphp
                 @foreach($dates as $date)
                     @php

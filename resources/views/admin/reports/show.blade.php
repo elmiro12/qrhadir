@@ -47,11 +47,11 @@
             @forelse($participants as $ep)
                 <tr class="border-t hover:bg-gray-50">
                     <td class="px-4 py-3">
-                        <div class="font-medium">{{ $ep->participant->name }}</div>
-                        <div class="text-xs text-gray-500">{{ $ep->participant->email }}</div>
+                        <div class="font-medium">{{ $ep->participant?->name ?? 'Unknown' }}</div>
+                        <div class="text-xs text-gray-500">{{ $ep->participant?->email ?? 'Unknown' }}</div>
                     </td>
                     <td class="px-4 py-3">
-                        <x-badge variant="info">{{ $ep->participantType->name ?? '-' }}</x-badge>
+                        <x-badge variant="info">{{ $ep->participantType?->name ?? '-' }}</x-badge>
                     </td>
                     
                     @foreach($dates as $date)
