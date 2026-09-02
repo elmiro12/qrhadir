@@ -69,10 +69,10 @@ class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
 
         foreach ($this->dates as $date) {
             $attendance = $eventParticipant->attendances->first(function ($att) use ($date) {
-                return \Carbon\Carbon::parse($att->scanned_at)->format('Y-m-d') === $date;
+                return \Carbon\Carbon::parse($att->checkin_time)->format('Y-m-d') === $date;
             });
 
-            $row[] = $attendance ? \Carbon\Carbon::parse($attendance->scanned_at)->format('H:i:s') : 'Tidak Hadir';
+            $row[] = $attendance ? \Carbon\Carbon::parse($attendance->checkin_time)->format('H:i:s') : 'Tidak Hadir';
         }
 
         return $row;

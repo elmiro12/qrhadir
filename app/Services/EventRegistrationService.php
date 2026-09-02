@@ -75,8 +75,7 @@ class EventRegistrationService
                     'event_participant_id' => $eventParticipant->id,
                     'attendance_date'      => now()->toDateString(),
                 ], [
-                    'scanned_at' => now(),
-                    'scanned_by' => null // system
+                    'checkin_time' => now(),
                 ]);
             }
         });

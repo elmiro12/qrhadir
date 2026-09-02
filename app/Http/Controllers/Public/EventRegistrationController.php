@@ -73,13 +73,19 @@ class EventRegistrationController extends Controller
      */
     public function show(Event $event)
     {
-        if ($event->type === 'online' && now() < $event->start_date) {
-            return redirect()->route('events.index')->with('error', 'Form absensi event online ini baru akan dibuka pada saat acara dimulai.');
+        $registrationStatus = 'active';
+
+        if ($event->type === 'online') {
+            if (now() < $event->start_date) {
+                $registrationStatus = 'not_started';
+            } elseif (now() > $event->end_date) {
+                $registrationStatus = 'ended';
+            }
         }
 
         $participantTypes = $event->participantTypes()->orderBy('name')->get();
 
-        return view('pages.events.register', compact('event', 'participantTypes'));
+        return view('pages.events.register', compact('event', 'participantTypes', 'registrationStatus'));
     }
 
     /**

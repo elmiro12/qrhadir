@@ -25,13 +25,38 @@
         </p>
     </div>
 
-    {{-- Loading State --}}
-    <div x-show="isLoading" class="text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mb-2"></div>
-        <p class="text-gray-500">Memproses...</p>
-    </div>
+    @if(isset($registrationStatus) && $registrationStatus !== 'active')
+        <div class="text-center py-6">
+            @if($registrationStatus === 'not_started')
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-icons text-3xl">schedule</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Event Belum Dimulai</h3>
+                <p class="text-gray-600 mb-4 text-sm">
+                    Registrasi dan Absensi baru dapat dilakukan pada saat acara dimulai, yaitu tanggal: <br>
+                    <strong class="block mt-2">{{ \Carbon\Carbon::parse($event->start_date)->translatedFormat('d F Y - H:i') }}</strong>
+                </p>
+            @elseif($registrationStatus === 'ended')
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-icons text-3xl">event_busy</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Event Sudah Selesai</h3>
+                <p class="text-gray-600 mb-4 text-sm">
+                    Registrasi dan Absensi telah ditutup. Terima kasih atas partisipasinya.
+                </p>
+            @endif
+            <a href="{{ route('events.index') }}" class="inline-block mt-4 px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition">
+                Lihat Event Lainnya
+            </a>
+        </div>
+    @else
+        {{-- Loading State --}}
+        <div x-show="isLoading" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mb-2"></div>
+            <p class="text-gray-500">Memproses...</p>
+        </div>
 
-    <form x-show="!isLoading" action="{{ route('event.register.store', $event->slug) }}" method="POST" @submit.prevent="submitForm">
+        <form x-show="!isLoading" action="{{ route('event.register.store', $event->slug) }}" method="POST" @submit.prevent="submitForm">
         @csrf
 
         {{-- Step 1: Cek Identifier (Email/HP) --}}
@@ -102,7 +127,8 @@
 
             <x-button type="submit" class="w-full mx-auto">Daftar Sekarang</x-button>
         </div>
-    </form>
+        </form>
+    @endif
 </div>
 
 @push('scripts')
