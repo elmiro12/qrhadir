@@ -37,7 +37,11 @@ class DashboardController extends Controller
         $attendanceTrend = $last7Days->merge($attendanceTrendArr);
 
         // 3. Recent Registrations
-        $recentParticipants = EventParticipant::with(['participant', 'event', 'participantType'])
+        $recentParticipants = EventParticipant::with([
+                'participant' => function($q) { $q->withoutGlobalScope('ownership'); },
+                'event',
+                'participantType' => function($q) { $q->withoutGlobalScope('ownership'); }
+            ])
             ->latest()
             ->take(5)
             ->get();

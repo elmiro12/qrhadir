@@ -64,17 +64,17 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-semibold text-gray-900 truncate">
-                                    {{ $rp->participant->name }}
+                                    {{ $rp->participant?->name ?? 'Unknown' }}
                                 </p>
                                 <p class="text-xs text-gray-500 truncate">
-                                    {{ $rp->event->name }}
+                                    {{ $rp->event?->name ?? 'Unknown Event' }}
                                 </p>
                                 <p class="text-xs text-gray-400 truncate italic">
                                     {{ $rp->registered_via === 'admin' ? 'Didaftarkan oleh Administrator' : 'Mendaftar via Portal' }}
                                 </p>
                             </div>
                             <div>
-                                <x-badge variant="info" class="text-[10px]">{{ $rp->participantType->name ?? 'User' }}</x-badge>
+                                <x-badge variant="info" class="text-[10px]">{{ $rp->participantType?->name ?? 'User' }}</x-badge>
                             </div>
                         </div>
                     </li>
