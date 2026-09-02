@@ -32,7 +32,11 @@ class AttendanceExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
         return $this->event->eventParticipants()
             ->join('participant_types', 'event_participants.participant_type_id', '=', 'participant_types.id')
             ->join('participants', 'event_participants.participant_id', '=', 'participants.id')
-            ->with(['participant', 'attendances', 'participantType'])
+            ->with([
+                'participant' => function($q) { $q->withoutGlobalScope('ownership'); },
+                'attendances',
+                'participantType' => function($q) { $q->withoutGlobalScope('ownership'); }
+            ])
             ->orderBy('participant_types.id', 'asc')
             ->orderBy('participants.name', 'asc')
             ->select('event_participants.*');

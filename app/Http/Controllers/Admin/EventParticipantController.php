@@ -16,7 +16,11 @@ class EventParticipantController extends Controller
     public function index(Request $request, Event $event)
     {
         $participants = $event->participants()
-            ->with(['participant', 'participantType', 'qrToken'])
+            ->with([
+                'participant' => function($q) { $q->withoutGlobalScope('ownership'); },
+                'participantType' => function($q) { $q->withoutGlobalScope('ownership'); },
+                'qrToken'
+            ])
             ->latest()
             ->get();
 
